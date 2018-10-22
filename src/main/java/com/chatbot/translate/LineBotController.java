@@ -84,7 +84,7 @@ public class LineBotController
                 if (!msgText.contains("bot leave")){
 
                     String fromLang = "id";
-                    String toLang = "en";
+                    String toLang = "su";
                     //String tex = "Let's have some fun!";
 
                     translate(fromLang, toLang, msgText, payload.events[0].replyToken);
