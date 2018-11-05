@@ -83,7 +83,7 @@ public class LineBotController
                 //msgText = msgText.toLowerCase();
 
                 if (!msgText.contains("bot leave")){
-                    if(msgText.contains("No Boss")){
+                    if(msgText.equalsIgnoreCase("no boss")){
                         statusBos = false;
                         replyToUser(payload.events[0].replyToken, "OK");
                     }
