@@ -99,11 +99,11 @@ public class LineBotController
                     }
                     */
                 }
-                else if(msgText.equalsIgnoreCase("No Boss")){
+                else if(msgText.contains("No Boss")){
                     statusBos = false;
                     replyToUser(payload.events[0].replyToken, "OK");
                 }
-                else if(msgText.equalsIgnoreCase("Boss")){
+                else if(msgText.contains("Boss")){
                     statusBos = true;
                 }
                 else {
