@@ -37,6 +37,7 @@ public class LineBotController
     private static final String CLIENT_ID = "FREE_TRIAL_ACCOUNT";
     private static final String CLIENT_SECRET = "PUBLIC_SECRET";
     private static final String ENDPOINT = "http://api.whatsmate.net/v1/translation/translate";
+    private boolean statusBos = false;
 
     @RequestMapping(value="/callback", method=RequestMethod.POST)
 
@@ -97,7 +98,15 @@ public class LineBotController
                         e.printStackTrace();
                     }
                     */
-                } else {
+                }
+                else if(msgText.equalsIgnoreCase("No Boss")){
+                    statusBos = false;
+                    replyToUser(payload.events[0].replyToken, "OK");
+                }
+                else if(msgText.equalsIgnoreCase("Boss")){
+                    statusBos = true;
+                }
+                else {
                     if (payload.events[0].source.type.equals("group")){
                         leaveGR(payload.events[0].source.groupId, "group");
                     } else if (payload.events[0].source.type.equals("room")){
@@ -151,6 +160,10 @@ public class LineBotController
             //System.out.println(output);
         }
         conn.disconnect();
+    }
+
+    private void simpanPesan(String perintah, String kunci, String nilai, String payload) throws IOException{
+
     }
 
     private void getMessageData(String message, String targetID) throws IOException{
