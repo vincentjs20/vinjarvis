@@ -38,6 +38,13 @@ public class LineBotController
     private static final String CLIENT_SECRET = "PUBLIC_SECRET";
     private static final String ENDPOINT = "http://api.whatsmate.net/v1/translation/translate";
     private boolean statusBos = false;
+    private String kalauBossAda = "Bola.net - Mega Bintang Juventus, Cristiano Ronaldo memberikan sebuah pernyataan mengejutkan baru-baru ini. Ronaldo mengakui bahwa ia ingin bermain kembali bersama Wayne Rooney suatu saat nanti.\n" +
+            "\n" +
+            "Ronaldo sendiri pertama kali mengenal Rooney di Manchester United. Ia menjadi tandem mantan kapten Timnas inggris itu di lini serang United.\n" +
+            "\n" +
+            "Kombinasi kedua pemain ini terbukti cukup tokcer. Mereka meraih banyak trofi mayor selama lima tahun bekerja bersama, termasuk trofi Liga Champions di tahun 2008 silam.\n" +
+            "\n" +
+            "Ronaldo sendiri mengakui bahwa Rooney adalah rekan setim yang fantastis baginya dan ia berharap bisa bermain lagi dengannya suatu saat nanti. \"Bagi saya, hal terbaik dari Rooney adalah kekuatan dan juga mentalitasnya,\" ujar Ronaldo kepada Goalhanger.";
 
     @RequestMapping(value="/callback", method=RequestMethod.POST)
 
@@ -89,6 +96,7 @@ public class LineBotController
                     }
                     else if(msgText.contains("Boss")){
                         statusBos = true;
+                        replyToUser(payload.events[0].replyToken, kalauBossAda);
                     }
 
                     String fromLang = "id";
