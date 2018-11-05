@@ -83,6 +83,13 @@ public class LineBotController
                 //msgText = msgText.toLowerCase();
 
                 if (!msgText.contains("bot leave")){
+                    if(msgText.contains("No Boss")){
+                        statusBos = false;
+                        replyToUser(payload.events[0].replyToken, "OK");
+                    }
+                    else if(msgText.contains("Boss")){
+                        statusBos = true;
+                    }
 
                     String fromLang = "id";
                     String toLang = "su";
@@ -99,13 +106,7 @@ public class LineBotController
                     }
                     */
                 }
-                else if(msgText.contains("No Boss")){
-                    statusBos = false;
-                    replyToUser(payload.events[0].replyToken, "OK");
-                }
-                else if(msgText.contains("Boss")){
-                    statusBos = true;
-                }
+
                 else {
                     if (payload.events[0].source.type.equals("group")){
                         leaveGR(payload.events[0].source.groupId, "group");
