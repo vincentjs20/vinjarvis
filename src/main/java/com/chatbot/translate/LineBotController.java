@@ -105,9 +105,11 @@ public class LineBotController
                     if(statusBos=false){
                         if(msgText.contains("Save")||msgText.contains("save")){
                             simpanPesan(msgText);
+                            replyToUser(payload.events[0].replyToken, "Ok");
                         }
                         else if(msgText.contains("Load")||msgText.contains("load")){
-                            keluarkanPesan(msgText);
+                            String hasil = keluarkanPesan(msgText);
+                            replyToUser(payload.events[0].replyToken, hasil);
                         }
                     }
 
@@ -190,8 +192,11 @@ public class LineBotController
         hmap.put(key, value);
     }
 
-    private void keluarkanPesan(String perintah){
+    private String keluarkanPesan(String perintah){
         String key = perintah.substring(6, perintah.length());
+        String value = hmap.get(key);
+        return value;
+
     }
 
     private void getMessageData(String message, String targetID) throws IOException{
