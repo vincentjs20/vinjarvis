@@ -102,7 +102,7 @@ public class LineBotController
                         replyToUser(payload.events[0].replyToken, kalauBossAda);
                     }
 
-                    if(statusBos=false){
+                    if(statusBos==false){
                         if(msgText.contains("Save")||msgText.contains("save")){
                             simpanPesan(msgText);
                             replyToUser(payload.events[0].replyToken, "Ok");
