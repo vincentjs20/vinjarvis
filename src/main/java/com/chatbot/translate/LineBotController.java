@@ -193,9 +193,9 @@ public class LineBotController
     }
 
     private String keluarkanPesan(String perintah){
-        String key = perintah.substring(6, perintah.length());
-        String value = hmap.get(key);
-        return value;
+        String[] data = perintah.split(" ");
+        String val = hmap.get(data[1]);
+        return val;
 
     }
 
