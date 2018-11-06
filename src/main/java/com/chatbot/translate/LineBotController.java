@@ -21,6 +21,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping(value="/linebot")
@@ -33,6 +34,8 @@ public class LineBotController
     @Autowired
     @Qualifier("com.linecorp.channel_access_token")
     String lChannelAccessToken;
+
+    HashMap<String, String> hmap = new HashMap<String, String>();
 
     private static final String CLIENT_ID = "FREE_TRIAL_ACCOUNT";
     private static final String CLIENT_SECRET = "PUBLIC_SECRET";
@@ -94,9 +97,18 @@ public class LineBotController
                         statusBos = false;
                         replyToUser(payload.events[0].replyToken, "OK");
                     }
-                    else if(msgText.contains("Boss")){
+                    else if(msgText.equalsIgnoreCase("Boss")){
                         statusBos = true;
                         replyToUser(payload.events[0].replyToken, kalauBossAda);
+                    }
+
+                    if(statusBos=false){
+                        if(msgText.contains("Save")||msgText.contains("save")){
+                            simpanPesan(msgText);
+                        }
+                        else if(msgText.contains("Load")||msgText.contains("load")){
+                            keluarkanPesan(msgText);
+                        }
                     }
 
                     String fromLang = "id";
@@ -171,8 +183,15 @@ public class LineBotController
         conn.disconnect();
     }
 
-    private void simpanPesan(String perintah, String kunci, String nilai, String payload) throws IOException{
+    private void simpanPesan(String perintah){
+        String[] data = perintah.split(" ");
+        String key = data[1];
+        String value = data[2];
+        hmap.put(key, value);
+    }
 
+    private void keluarkanPesan(String perintah){
+        String key = perintah.substring(6, perintah.length());
     }
 
     private void getMessageData(String message, String targetID) throws IOException{
