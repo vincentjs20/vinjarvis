@@ -111,11 +111,11 @@ public class LineBotController
                         }
                     }
 
-                    String fromLang = "id";
-                    String toLang = "su";
+                    //String fromLang = "id";
+                    //String toLang = "su";
                     //String tex = "Let's have some fun!";
 
-                    translate(fromLang, toLang, msgText, payload.events[0].replyToken);
+                    //translate(fromLang, toLang, msgText, payload.events[0].replyToken);
 
                     //replyToUser(payload.events[0].replyToken, msgText);
                     /*try {
