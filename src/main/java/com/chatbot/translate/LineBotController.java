@@ -39,7 +39,7 @@ public class LineBotController
 
     private static final String CLIENT_ID = "FREE_TRIAL_ACCOUNT";
     private static final String CLIENT_SECRET = "PUBLIC_SECRET";
-    private static final String ENDPOINT = "http://api.whatsmate.net/v1/translation/translate";
+    //private static final String ENDPOINT = "http://api.whatsmate.net/v1/translation/translate";
     private boolean statusBos = false;
     private String kalauBossAda = "Bola.net - Mega Bintang Juventus, Cristiano Ronaldo memberikan sebuah pernyataan mengejutkan baru-baru ini. Ronaldo mengakui bahwa ia ingin bermain kembali bersama Wayne Rooney suatu saat nanti.\n" +
             "\n" +
@@ -104,11 +104,11 @@ public class LineBotController
 
                     if(statusBos==false){
                         if(msgText.contains("Save")||msgText.contains("save")){
-                            simpanPesan(msgText);
+                            simpanPesan(msgText, payload);
                             replyToUser(payload.events[0].replyToken, "Ok");
                         }
                         else if(msgText.contains("Load")||msgText.contains("load")){
-                            String hasil = keluarkanPesan(msgText);
+                            String hasil = keluarkanPesan(msgText, payload);
                             replyToUser(payload.events[0].replyToken, hasil);
                         }
                     }
@@ -159,42 +159,44 @@ public class LineBotController
                 .append("}")
                 .toString();
 
-        URL url = new URL(ENDPOINT);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setDoOutput(true);
-        conn.setRequestMethod("POST");
-        conn.setRequestProperty("X-WM-CLIENT-ID", CLIENT_ID);
-        conn.setRequestProperty("X-WM-CLIENT-SECRET", CLIENT_SECRET);
-        conn.setRequestProperty("Content-Type", "application/json");
-
-        OutputStream os = conn.getOutputStream();
-        os.write(jsonPayload.getBytes());
-        os.flush();
-        os.close();
-
-        int statusCode = conn.getResponseCode();
-        System.out.println("Status Code: " + statusCode);
-        BufferedReader br = new BufferedReader(new InputStreamReader(
-                (statusCode == 200) ? conn.getInputStream() : conn.getErrorStream()
-        ));
-        String output;
-        while ((output = br.readLine()) != null) {
-            replyToUser(payload, output);
-            //System.out.println(output);
-        }
-        conn.disconnect();
+        //URL url = new URL(ENDPOINT);
+//        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//        conn.setDoOutput(true);
+//        conn.setRequestMethod("POST");
+//        conn.setRequestProperty("X-WM-CLIENT-ID", CLIENT_ID);
+//        conn.setRequestProperty("X-WM-CLIENT-SECRET", CLIENT_SECRET);
+//        conn.setRequestProperty("Content-Type", "application/json");
+//
+//        OutputStream os = conn.getOutputStream();
+//        os.write(jsonPayload.getBytes());
+//        os.flush();
+//        os.close();
+//
+//        int statusCode = conn.getResponseCode();
+//        System.out.println("Status Code: " + statusCode);
+//        BufferedReader br = new BufferedReader(new InputStreamReader(
+//                (statusCode == 200) ? conn.getInputStream() : conn.getErrorStream()
+//        ));
+//        String output;
+//        while ((output = br.readLine()) != null) {
+//            replyToUser(payload, output);
+//            //System.out.println(output);
+//        }
+//        conn.disconnect();
     }
 
-    private void simpanPesan(String perintah){
+    private void simpanPesan(String perintah, Payload payload){
         String[] data = perintah.split(" ");
-        String key = data[1];
+        String id = payload.events[0].source.userId;
+        String key = data[1]+id;
         String value = data[2];
         hmap.put(key, value);
     }
 
-    private String keluarkanPesan(String perintah){
+    private String keluarkanPesan(String perintah, Payload payload){
         String[] data = perintah.split(" ");
-        String val = hmap.get(data[1]);
+        String id = payload.events[0].source.userId;
+        String val = hmap.get(data[1]+id);
         return val;
 
     }
