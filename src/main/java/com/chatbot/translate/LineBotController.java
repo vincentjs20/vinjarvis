@@ -35,7 +35,7 @@ public class LineBotController
     @Qualifier("com.linecorp.channel_access_token")
     String lChannelAccessToken;
 
-    HashMap<String, String> hmap = new HashMap<String, String>();
+    static HashMap<String, String> hmap = new HashMap<String, String>();
 
     private static final String CLIENT_ID = "FREE_TRIAL_ACCOUNT";
     private static final String CLIENT_SECRET = "PUBLIC_SECRET";
