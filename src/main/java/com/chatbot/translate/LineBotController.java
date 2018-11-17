@@ -14,13 +14,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import retrofit2.Response;
-import java.io.BufferedReader;
-import java.io.OutputStream;
-import java.io.InputStreamReader;
+
+import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
-import java.io.IOException;
+import java.sql.*;
 import java.util.HashMap;
 
 @RestController
@@ -51,6 +52,14 @@ public class LineBotController
 
     @RequestMapping(value="/callback", method=RequestMethod.POST)
 
+    private static Connection getConnection() throws URISyntaxException, SQLException {
+        URI dbUri = new URI(System.getenv("DATABASE_URL"));
+        String username = dbUri.getUserInfo().split(":")[0];
+        String password = dbUri.getUserInfo().split(":")[1];
+        String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath() + "?sslmode=require";
+        return DriverManager.getConnection(dbUrl);
+    }
+
     public ResponseEntity<String> callback(
             @RequestHeader("X-Line-Signature") String aXLineSignature,
             @RequestBody String aPayload) throws IOException {
@@ -69,6 +78,10 @@ public class LineBotController
         String msgText = " ";
         String idTarget = " ";
         String eventType = payload.events[0].type;
+
+        FileInputStream serviceAccount = new FileInputStream("/src/main/resources/lbwchatbot-firebase-adminsdk.json");
+
+
 
         if (eventType.equals("join")){
             if (payload.events[0].source.type.equals("group")){
@@ -190,7 +203,29 @@ public class LineBotController
         String id = payload.events[0].source.userId;
         String key = data[1]+id;
         String value = data[2];
+
+        Simpanan dataSimpanan = new Simpanan(id, key, value);
+        insertData(dataSimpanan);
         hmap.put(key, value);
+    }
+
+    public void insertData(Simpanan simpanan){
+        String sql="INSERT INTO simpanan(id_person,key,value)"
+                + "VALUES(?,?,?)";
+
+        try (
+                Connection conn = getConnection();
+                PreparedStatement statement = conn.prepareStatement(sql);) {
+                statement.setString(1, simpanan.getId_person());
+                statement.setString(2, simpanan.getKey());
+            statement.setString(2, simpanan.getValue());
+
+            statement.execute();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
     private String keluarkanPesan(String perintah, Payload payload){
