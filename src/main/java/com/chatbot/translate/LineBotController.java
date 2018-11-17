@@ -53,7 +53,7 @@ public class LineBotController
     @RequestMapping(value="/callback", method=RequestMethod.POST)
 
     private static Connection getConnection() throws URISyntaxException, SQLException {
-        URI dbUri = new URI(System.getenv("hkcgmyojwiiysw:aaf41a665067f4f09a3286ed54e40d7453dcc2b8d120acee1a61257b7ee7fadc@ec2-54-83-27-162.compute-1.amazonaws.com:5432/dg7laquo4cnhn\n"));
+        URI dbUri = new URI(System.getenv("DATABASE_URL"));
         String username = dbUri.getUserInfo().split(":")[0];
         String password = dbUri.getUserInfo().split(":")[1];
         String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath() + "?sslmode=require";
@@ -198,35 +198,31 @@ public class LineBotController
 //        conn.disconnect();
     }
 
-    private void simpanPesan(String perintah, Payload payload){
+    private void simpanPesan(String perintah, Payload payload) {
         String[] data = perintah.split(" ");
         String id = payload.events[0].source.userId;
-        String key = data[1]+id;
+        String key = data[1] + id;
         String value = data[2];
 
-        //Simpanan dataSimpanan = new Simpanan(id, key, value);
-        //insertData(dataSimpanan);
-        hmap.put(key, value);
     }
-
-    public void insertData(Simpanan simpanan){
-        String sql="INSERT INTO simpanan(id_person,key,value)"
-                + "VALUES(?,?,?)";
-
-        try (
-                Connection conn = getConnection();
-                PreparedStatement statement = conn.prepareStatement(sql);) {
-                statement.setString(1, simpanan.getId_person());
-                statement.setString(2, simpanan.getKey());
-            statement.setString(2, simpanan.getValue());
-
-            statement.execute();
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
+//    public void insertData(Simpanan simpanan){
+//        String sql="INSERT INTO simpanan(id_person,key,value)"
+//                + "VALUES(?,?,?)";
+//
+//        try (
+//                Connection conn = getConnection();
+//                PreparedStatement statement = conn.prepareStatement(sql);) {
+//                statement.setString(1, simpanan.getId_person());
+//                statement.setString(2, simpanan.getKey());
+//            statement.setString(2, simpanan.getValue());
+//
+//            statement.execute();
+//        } catch (SQLException ex) {
+//            System.out.println(ex.getMessage());
+//        } catch (URISyntaxException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private String keluarkanPesan(String perintah, Payload payload){
         String[] data = perintah.split(" ");
