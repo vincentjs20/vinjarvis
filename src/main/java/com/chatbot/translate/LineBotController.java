@@ -149,7 +149,7 @@ public class LineBotController
                         leaveGR(payload.events[0].source.roomId, "room");
                     }
                 }
-
+                //cobain push
             }
         }
 
