@@ -53,7 +53,7 @@ public class LineBotController
     @RequestMapping(value="/callback", method=RequestMethod.POST)
 
     private static Connection getConnection() throws URISyntaxException, SQLException {
-        URI dbUri = new URI(System.getenv("DATABASE_URL"));
+        URI dbUri = new URI(System.getenv("hkcgmyojwiiysw:aaf41a665067f4f09a3286ed54e40d7453dcc2b8d120acee1a61257b7ee7fadc@ec2-54-83-27-162.compute-1.amazonaws.com:5432/dg7laquo4cnhn\n"));
         String username = dbUri.getUserInfo().split(":")[0];
         String password = dbUri.getUserInfo().split(":")[1];
         String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath() + "?sslmode=require";
