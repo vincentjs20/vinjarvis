@@ -18,10 +18,7 @@ import retrofit2.Response;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.HashMap;
 
 @RestController
@@ -36,17 +33,31 @@ public class LineBotController
     @Qualifier("com.linecorp.channel_access_token")
     String lChannelAccessToken;
     private static Connection getConnection() throws URISyntaxException, SQLException {
-//        String urlPostgres = "hkcgmyojwiiysw:aaf41a665067f4f09a3286ed54e40d7453dcc2b8d120acee1a61257b7ee7fadc@ec2-54-83-27-162.compute-1.amazonaws.com:5432/dg7laquo4cnhn";
-//        URI dbUri = new URI(System.getenv(urlPostgres));
-//        String username = dbUri.getUserInfo().split(":")[0];
-//        String password = dbUri.getUserInfo().split(":")[1];
+
+        Connection connection=null;
+        try {
+            connection = DriverManager.getConnection("jdbc:postgresql://ec2-54-83-27-162.compute-1.amazonaws.com:5432/dg7laquo4cnhn", "hkcgmyojwiiysw", "aaf41a665067f4f09a3286ed54e40d7453dcc2b8d120acee1a61257b7ee7fadc");
+            System.out.println("Java JDBC PostgreSQL Example");
+            // When this class first attempts to establish a connection, it automatically loads any JDBC 4.0 drivers found within
+            // the class path. Note that your application must manually load any JDBC drivers prior to version 4.0.
+//			Class.forName("org.postgresql.Driver");
+
+            System.out.println("Connected to PostgreSQL database!");
+            return connection;
+        } /*catch (ClassNotFoundException e) {
+			System.out.println("PostgreSQL JDBC driver not found.");
+			e.printStackTrace();
+		}*/ catch (SQLException e) {
+            System.out.println("Connection failure.");
+            e.printStackTrace();
+        }
+        String dbUrl = "postgres://hkcgmyojwiiysw:aaf41a665067f4f09a3286ed54e40d7453dcc2b8d120acee1a61257b7ee7fadc@ec2-54-83-27-162.compute-1.amazonaws.com:5432/dg7laquo4cnhn";
+
         String username ="hkcgmyojwiiysw";
-        String password  = "aaf41a665067f4f09a3286ed54e40d7453dcc2b8d120acee1a61257b7ee7fadc\n";
-        String dbUrl = "jdbc:postgresql://" + "ec2-54-83-27-162.compute-1.amazonaws.com" + ':' + "5432" + "/dg7laquo4cnhn";
-        //pushMessage("Vincent JS ", DriverManager.getConnection(dbUrl, username, password).isValid());
 
+        String password="aaf41a665067f4f09a3286ed54e40d7453dcc2b8d120acee1a61257b7ee7fadc";
 
-            return DriverManager.getConnection(dbUrl, username, password);
+        return connection;
     }
 
     static HashMap<String, String> hmap = new HashMap<String, String>();
@@ -119,7 +130,7 @@ public class LineBotController
                     if(statusBos==false){
                         if(msgText.contains("Save")||msgText.contains("save")){
                             simpanPesan(msgText, payload);
-                            replyToUser(payload.events[0].replyToken, "Ok"+(getConnection().isValid(5)+""));
+                            replyToUser(payload.events[0].replyToken, "Ok");
                         }
                         else if(msgText.contains("Load")||msgText.contains("load")){
                             String hasil = keluarkanPesan(msgText, payload);
@@ -157,41 +168,48 @@ public class LineBotController
         return new ResponseEntity<String>(HttpStatus.OK);
     }
 
-    private void simpanPesan(String perintah, Payload payload){
+    private void simpanPesan(String perintah, Payload payload) throws URISyntaxException, SQLException {
         String[] data = perintah.split(" ");
         String id = payload.events[0].source.userId;
-        String key = data[1]+id;
+        String key = data[1];
         String value = data[2];
         hmap.put(key, value);
 //        Simpanan simpanan=new Simpanan(id,key,value);
         insertData(id,key,value);
     }
 
-    public void insertData(String id_person, String key, String value){
-        String sql="INSERT INTO simpanan(id_person,key,value)"
-                + "VALUES(?,?,?)";
+    public void insertData(String id, String key, String value) throws URISyntaxException, SQLException {
 
-        PreparedStatement st = null;
-        try {
-            st = getConnection().prepareStatement("INSERT INTO simpanan (id_person, key, value) VALUES (?, ?, ?)");
-            st.setString(1, id_person);
-            st.setString(2, key);
-            st.setString(3, value);
+        PreparedStatement st = getConnection().prepareStatement("INSERT INTO simpanan (id_person,key,value)"+"\n" + " VALUES(?,?,?);");
+        st.setString(1, id);
+        st.setString(2, key);
+        st.setString(3, value);
 
-            st.executeUpdate();
-            st.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
+        st.executeUpdate();
+        st.close();
+
+
 
     }
 
-    private String keluarkanPesan(String perintah, Payload payload){
+    public String getData(String id, String value) throws URISyntaxException, SQLException{
+        PreparedStatement st = getConnection().prepareStatement("select value from simpanan where id_person = ? AND key = ?;");
+        st.setString(1, id);
+        st.setString(2, value);
+        ResultSet rs= st.executeQuery();
+        rs.next();
+        String hasil = (String)rs.getObject(1);
+        //System.out.println(rs.getObject(1));
+        st.close();
+        return hasil;
+    }
+
+    private String keluarkanPesan(String perintah, Payload payload) throws URISyntaxException, SQLException {
         String[] data = perintah.split(" ");
         String id = payload.events[0].source.userId;
-        String val = hmap.get(data[1]+id);
+        String key=data[1];
+        //String val = hmap.get(data[1]+id);
+        String val = getData(id,key );
         return val;
 
     }
