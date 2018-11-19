@@ -43,8 +43,10 @@ public class LineBotController
         String username ="hkcgmyojwiiysw";
         String password  = "aaf41a665067f4f09a3286ed54e40d7453dcc2b8d120acee1a61257b7ee7fadc\n";
         String dbUrl = "jdbc:postgresql://" + "ec2-54-83-27-162.compute-1.amazonaws.com" + ':' + "5432" + "/dg7laquo4cnhn";
+        //pushMessage("Vincent JS ", DriverManager.getConnection(dbUrl, username, password).isValid());
 
-        return DriverManager.getConnection(dbUrl, username, password);
+
+            return DriverManager.getConnection(dbUrl, username, password);
     }
 
     static HashMap<String, String> hmap = new HashMap<String, String>();
@@ -65,7 +67,7 @@ public class LineBotController
 
     public ResponseEntity<String> callback(
             @RequestHeader("X-Line-Signature") String aXLineSignature,
-            @RequestBody String aPayload) throws IOException {
+            @RequestBody String aPayload) throws IOException, URISyntaxException, SQLException {
         final String text=String.format("The Signature is: %s",
                 (aXLineSignature!=null && aXLineSignature.length() > 0) ? aXLineSignature : "N/A");
         System.out.println(text);
@@ -117,7 +119,7 @@ public class LineBotController
                     if(statusBos==false){
                         if(msgText.contains("Save")||msgText.contains("save")){
                             simpanPesan(msgText, payload);
-                            replyToUser(payload.events[0].replyToken, "Ok");
+                            replyToUser(payload.events[0].replyToken, "Ok"+(getConnection().isValid(5)+""));
                         }
                         else if(msgText.contains("Load")||msgText.contains("load")){
                             String hasil = keluarkanPesan(msgText, payload);
