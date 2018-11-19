@@ -16,6 +16,11 @@ import org.springframework.web.bind.annotation.*;
 import retrofit2.Response;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.HashMap;
 
 @RestController
@@ -29,6 +34,15 @@ public class LineBotController
     @Autowired
     @Qualifier("com.linecorp.channel_access_token")
     String lChannelAccessToken;
+    private static Connection getConnection() throws URISyntaxException, SQLException {
+        String urlPostgres = "postgres://hkcgmyojwiiysw:aaf41a665067f4f09a3286ed54e40d7453dcc2b8d120acee1a61257b7ee7fadc@ec2-54-83-27-162.compute-1.amazonaws.com:5432/dg7laquo4cnhn";
+        URI dbUri = new URI(System.getenv(urlPostgres));
+        String username = dbUri.getUserInfo().split(":")[0];
+        String password = dbUri.getUserInfo().split(":")[1];
+        String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
+
+        return DriverManager.getConnection(dbUrl, username, password);
+    }
 
     static HashMap<String, String> hmap = new HashMap<String, String>();
 
