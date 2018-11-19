@@ -1,4 +1,4 @@
-package com.chatbot.translate;
+package com.chatbot.cheat;
 
 public class Source {
     public String userId;

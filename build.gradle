@@ -17,7 +17,7 @@ buildscript
 jar
 //war
 {
-	baseName = 'menirukanmu'
+	baseName = 'cheatbot'
 	version = '0.1.0'
 }
 

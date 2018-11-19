@@ -1,5 +1,5 @@
 
-package com.chatbot.translate;
+package com.chatbot.cheat;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
