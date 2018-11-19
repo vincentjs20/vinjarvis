@@ -160,27 +160,28 @@ public class LineBotController
         String value = data[2];
         hmap.put(key, value);
 //        Simpanan simpanan=new Simpanan(id,key,value);
-//        insertData(simpanan);
+        insertData(id,key,value);
     }
 
-    public void insertData(Simpanan simpanan){
+    public void insertData(String id_person, String key, String value){
         String sql="INSERT INTO simpanan(id_person,key,value)"
                 + "VALUES(?,?,?)";
 
-        try (
-                Connection conn = getConnection();
-                PreparedStatement statement = conn.prepareStatement(sql);) {
-                statement.setString(1, simpanan.getId_person());
-                statement.setString(2, simpanan.getKey());
-                statement.setString(3, simpanan.getValue());
+        PreparedStatement st = null;
+        try {
+            st = getConnection().prepareStatement("INSERT INTO simpanan (id_person, key, value) VALUES (?, ?, ?)");
+            st.setString(1, id_person);
+            st.setString(2, key);
+            st.setString(3, value);
 
-                statement.executeUpdate();
-                statement.close();
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            st.executeUpdate();
+            st.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
+
     }
 
     private String keluarkanPesan(String perintah, Payload payload){
