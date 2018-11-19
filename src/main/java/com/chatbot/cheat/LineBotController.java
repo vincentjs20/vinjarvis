@@ -172,9 +172,10 @@ public class LineBotController
                 PreparedStatement statement = conn.prepareStatement(sql);) {
                 statement.setString(1, simpanan.getId_person());
                 statement.setString(2, simpanan.getKey());
-            statement.setString(2, simpanan.getValue());
+                statement.setString(3, simpanan.getValue());
 
-            statement.execute();
+                statement.executeUpdate();
+                statement.close();
         } catch (SQLException ex) {
             System.out.println(ex.getMessage());
         } catch (URISyntaxException e) {
