@@ -14,14 +14,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import retrofit2.Response;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.OutputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
-import java.sql.*;
+import java.io.IOException;
 import java.util.HashMap;
 
 @RestController
@@ -52,14 +51,6 @@ public class LineBotController
 
     @RequestMapping(value="/callback", method=RequestMethod.POST)
 
-    private static Connection getConnection() throws URISyntaxException, SQLException {
-        URI dbUri = new URI(System.getenv("DATABASE_URL"));
-        String username = dbUri.getUserInfo().split(":")[0];
-        String password = dbUri.getUserInfo().split(":")[1];
-        String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath() + "?sslmode=require";
-        return DriverManager.getConnection(dbUrl);
-    }
-
     public ResponseEntity<String> callback(
             @RequestHeader("X-Line-Signature") String aXLineSignature,
             @RequestBody String aPayload) throws IOException {
@@ -78,10 +69,6 @@ public class LineBotController
         String msgText = " ";
         String idTarget = " ";
         String eventType = payload.events[0].type;
-
-        //FileInputStream serviceAccount = new FileInputStream("/src/main/resources/lbwchatbot-firebase-adminsdk.json");
-
-
 
         if (eventType.equals("join")){
             if (payload.events[0].source.type.equals("group")){
@@ -149,38 +136,62 @@ public class LineBotController
                         leaveGR(payload.events[0].source.roomId, "room");
                     }
                 }
-                //cobain push
+
             }
         }
 
         return new ResponseEntity<String>(HttpStatus.OK);
     }
 
-    private void simpanPesan(String perintah, Payload payload) {
+    private void translate(String fromLang, String toLang, String text, String payload) throws IOException {
+        // TODO: Should have used a 3rd party library to make a JSON string from an object
+        String jsonPayload = new StringBuilder()
+                .append("{")
+                .append("\"fromLang\":\"")
+                .append(fromLang)
+                .append("\",")
+                .append("\"toLang\":\"")
+                .append(toLang)
+                .append("\",")
+                .append("\"text\":\"")
+                .append(text)
+                .append("\"")
+                .append("}")
+                .toString();
+
+        //URL url = new URL(ENDPOINT);
+//        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//        conn.setDoOutput(true);
+//        conn.setRequestMethod("POST");
+//        conn.setRequestProperty("X-WM-CLIENT-ID", CLIENT_ID);
+//        conn.setRequestProperty("X-WM-CLIENT-SECRET", CLIENT_SECRET);
+//        conn.setRequestProperty("Content-Type", "application/json");
+//
+//        OutputStream os = conn.getOutputStream();
+//        os.write(jsonPayload.getBytes());
+//        os.flush();
+//        os.close();
+//
+//        int statusCode = conn.getResponseCode();
+//        System.out.println("Status Code: " + statusCode);
+//        BufferedReader br = new BufferedReader(new InputStreamReader(
+//                (statusCode == 200) ? conn.getInputStream() : conn.getErrorStream()
+//        ));
+//        String output;
+//        while ((output = br.readLine()) != null) {
+//            replyToUser(payload, output);
+//            //System.out.println(output);
+//        }
+//        conn.disconnect();
+    }
+
+    private void simpanPesan(String perintah, Payload payload){
         String[] data = perintah.split(" ");
         String id = payload.events[0].source.userId;
-        String key = data[1] + id;
+        String key = data[1]+id;
         String value = data[2];
         hmap.put(key, value);
     }
-//    public void insertData(Simpanan simpanan){
-//        String sql="INSERT INTO simpanan(id_person,key,value)"
-//                + "VALUES(?,?,?)";
-//
-//        try (
-//                Connection conn = getConnection();
-//                PreparedStatement statement = conn.prepareStatement(sql);) {
-//                statement.setString(1, simpanan.getId_person());
-//                statement.setString(2, simpanan.getKey());
-//            statement.setString(2, simpanan.getValue());
-//
-//            statement.execute();
-//        } catch (SQLException ex) {
-//            System.out.println(ex.getMessage());
-//        } catch (URISyntaxException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     private String keluarkanPesan(String perintah, Payload payload){
         String[] data = perintah.split(" ");
