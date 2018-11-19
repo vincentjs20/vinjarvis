@@ -159,8 +159,8 @@ public class LineBotController
         String key = data[1]+id;
         String value = data[2];
         hmap.put(key, value);
-        Simpanan simpanan=new Simpanan(id,key,value);
-        insertData(simpanan);
+//        Simpanan simpanan=new Simpanan(id,key,value);
+//        insertData(simpanan);
     }
 
     public void insertData(Simpanan simpanan){
