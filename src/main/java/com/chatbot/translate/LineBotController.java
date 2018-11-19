@@ -79,7 +79,7 @@ public class LineBotController
         String idTarget = " ";
         String eventType = payload.events[0].type;
 
-        FileInputStream serviceAccount = new FileInputStream("/src/main/resources/lbwchatbot-firebase-adminsdk.json");
+        //FileInputStream serviceAccount = new FileInputStream("/src/main/resources/lbwchatbot-firebase-adminsdk.json");
 
 
 
