@@ -20,6 +20,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
 
@@ -158,6 +159,27 @@ public class LineBotController
         String key = data[1]+id;
         String value = data[2];
         hmap.put(key, value);
+        Simpanan simpanan=new Simpanan(id,key,value);
+        insertData(simpanan);
+    }
+
+    public void insertData(Simpanan simpanan){
+        String sql="INSERT INTO simpanan(id_person,key,value)"
+                + "VALUES(?,?,?)";
+
+        try (
+                Connection conn = getConnection();
+                PreparedStatement statement = conn.prepareStatement(sql);) {
+                statement.setString(1, simpanan.getId_person());
+                statement.setString(2, simpanan.getKey());
+            statement.setString(2, simpanan.getValue());
+
+            statement.execute();
+        } catch (SQLException ex) {
+            System.out.println(ex.getMessage());
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
 
     private String keluarkanPesan(String perintah, Payload payload){
