@@ -171,8 +171,12 @@ public class LineBotController
         String id = payload.events[0].source.userId;
         String key = data[1];
         String value = data[2];
-
-        insertData(id,key,value);
+        if(data[1] == null && data[2] == null){
+            replyToUser(payload.events[0].replyToken, "Harap masukan pesan degan format save key value");
+        }
+        else {
+            insertData(id, key, value);
+        }
     }
 
     public void insertData(String id, String key, String value) throws URISyntaxException, SQLException {
