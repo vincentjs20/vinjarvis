@@ -194,13 +194,16 @@ public class LineBotController
             st.executeUpdate();
             st.close();
         }
-        PreparedStatement st = getConnection().prepareStatement("INSERT INTO simpanan (id_person,key,value)"+"\n" + " VALUES(?,?,?);");
-        st.setString(1, id);
-        st.setString(2, key);
-        st.setString(3, value);
+        else{
+            PreparedStatement st = getConnection().prepareStatement("INSERT INTO simpanan (id_person,key,value)"+"\n" + " VALUES(?,?,?);");
+            st.setString(1, id);
+            st.setString(2, key);
+            st.setString(3, value);
 
-        st.executeUpdate();
-        st.close();
+            st.executeUpdate();
+            st.close();
+
+        }
 
 
 
