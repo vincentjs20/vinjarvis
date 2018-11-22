@@ -94,14 +94,7 @@ public class LineBotController
         String idTarget = " ";
         String eventType = payload.events[0].type;
 
-        if (eventType.equals("join")){
-            if (payload.events[0].source.type.equals("group")){
-                replyToUser(payload.events[0].replyToken, "Hello Group");
-            }
-            if (payload.events[0].source.type.equals("room")){
-                replyToUser(payload.events[0].replyToken, "Hello Room");
-            }
-        } else if (eventType.equals("message")){
+         if (eventType.equals("message")){
             if (payload.events[0].source.type.equals("group")){
                 idTarget = payload.events[0].source.groupId;
             } else if (payload.events[0].source.type.equals("room")){
@@ -123,7 +116,10 @@ public class LineBotController
                     }
                     else if(msgText.equalsIgnoreCase("Boss")){
                         statusBos = true;
-                        replyToUser(payload.events[0].replyToken, kalauBossAda);
+                        for(int i = 0;i< 2;i++){
+                            pushMessage(payload.events[0].source.userId,kalauBossAda);
+                        }
+                        //replyToUser(payload.events[0].replyToken, kalauBossAda);
                     }
 
                     if(statusBos==false){
@@ -179,7 +175,6 @@ public class LineBotController
         String key = data[1];
         String value = data[2];
 
-//        Simpanan simpanan=new Simpanan(id,key,value);
         insertData(id,key,value);
     }
 
@@ -193,8 +188,6 @@ public class LineBotController
 
             st.executeUpdate();
             st.close();
-
-
 
     }
 
@@ -218,12 +211,6 @@ public class LineBotController
         String val = getData(id,key );
         return val;
 
-    }
-
-    private void getMessageData(String message, String targetID) throws IOException{
-        if (message!=null){
-            pushMessage(targetID, message);
-        }
     }
 
     private void replyToUser(String rToken, String messageToUser){
