@@ -60,7 +60,6 @@ public class LineBotController
         return connection;
     }
 
-    static HashMap<String, String> hmap = new HashMap<String, String>();
 
     private static final String CLIENT_ID = "FREE_TRIAL_ACCOUNT";
     private static final String CLIENT_SECRET = "PUBLIC_SECRET";
@@ -134,7 +133,13 @@ public class LineBotController
                         }
                         else if(msgText.contains("Load")||msgText.contains("load")){
                             String hasil = keluarkanPesan(msgText, payload);
-                            replyToUser(payload.events[0].replyToken, hasil);
+                            if(hasil!= null){
+                                replyToUser(payload.events[0].replyToken, hasil);
+                            }
+                            else{
+                                replyToUser(payload.events[0].replyToken, "Value tidak ditemukan");
+                            }
+
                         }
                     }
 
@@ -173,13 +178,22 @@ public class LineBotController
         String id = payload.events[0].source.userId;
         String key = data[1];
         String value = data[2];
-        hmap.put(key, value);
+
 //        Simpanan simpanan=new Simpanan(id,key,value);
         insertData(id,key,value);
     }
 
     public void insertData(String id, String key, String value) throws URISyntaxException, SQLException {
+        String data = getData(id, key);
+        if(data!=null){
+            PreparedStatement st = getConnection().prepareStatement("UPDATE simpanan SET value = ?)"+"\n" + " WHERE key = ? AND idPerson = ?;");
+            st.setString(1, value);
+            st.setString(2, key);
+            st.setString(3, id);
 
+            st.executeUpdate();
+            st.close();
+        }
         PreparedStatement st = getConnection().prepareStatement("INSERT INTO simpanan (id_person,key,value)"+"\n" + " VALUES(?,?,?);");
         st.setString(1, id);
         st.setString(2, key);
