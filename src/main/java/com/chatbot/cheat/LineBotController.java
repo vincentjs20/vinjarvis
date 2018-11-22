@@ -116,10 +116,7 @@ public class LineBotController
                     }
                     else if(msgText.equalsIgnoreCase("Boss")){
                         statusBos = true;
-                        for(int i = 0;i< 2;i++){
-                            replyToUser(payload.events[0].replyToken, kalauBossAda);;
-                        }
-                        //replyToUser(payload.events[0].replyToken, kalauBossAda);
+                        replyToUser(payload.events[0].replyToken, kalauBossAda);;
                     }
 
                     if(statusBos==false){
