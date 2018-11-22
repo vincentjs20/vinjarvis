@@ -169,7 +169,7 @@ public class LineBotController
     private void simpanPesan(String perintah, Payload payload) throws URISyntaxException, SQLException {
         String[] data = perintah.split(" ");
         if(data.length<3){
-            replyToUser(payload.events[0].replyToken, "Harap masukan pesan degan format save key value");
+            replyToUser(payload.events[0].replyToken, "Harap masukan pesan degan format '[save] [key] [value]'");
         }
         else{
             String id = payload.events[0].source.userId;
@@ -217,11 +217,16 @@ public class LineBotController
 
     private String keluarkanPesan(String perintah, Payload payload) throws URISyntaxException, SQLException {
         String[] data = perintah.split(" ");
-        String id = payload.events[0].source.userId;
-        String key=data[1];
-        //String val = hmap.get(data[1]+id);
-        String val = getData(id,key);
-        return val;
+        if(perintah.length()<2){
+            replyToUser(payload.events[0].replyToken, "Harap masukan pesan degan format '[load] [value]'");
+        }
+        else{
+            String id = payload.events[0].source.userId;
+            String key=data[1];
+            //String val = hmap.get(data[1]+id);
+            String val = getData(id,key);
+            return val;
+        }
 
     }
 
