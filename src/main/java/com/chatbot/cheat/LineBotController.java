@@ -177,8 +177,7 @@ public class LineBotController
 
     public void insertData(String id, String key, String value) throws URISyntaxException, SQLException {
         String temp = getData(id, key);
-
-        if(temp!=null){
+        if(temp!=null || temp!= ""){
             PreparedStatement st = getConnection().prepareStatement("UPDATE simpanan SET value = ? WHERE id_person = ? AND key = ?;");
             st.setString(1, value);
             st.setString(2, id);
